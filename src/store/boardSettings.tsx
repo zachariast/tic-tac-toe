@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, Dispatch } from '@reduxjs/toolkit'
 
 const slice = createSlice({
   name: 'boardSettings',
@@ -10,7 +10,8 @@ const slice = createSlice({
     status: 'inactive',
     winningIndexes: [],
     currentPlayerMark: 'X',
-    winningPositions: []
+    winningPositions: [],
+    tieGame: false
   },
   reducers: {
     setPlayerNamesToStore: (state, { payload, type }) => {
@@ -36,6 +37,9 @@ const slice = createSlice({
     },
     setWinningPositionsToStore: (state, { payload, type }) => {
       state.winningPositions = payload
+    },
+    setTieGameToStore: (state, { payload, type }) => {
+      state.tieGame = payload
     }
   },
 });
@@ -50,10 +54,11 @@ const {
   setStatusToStore,
   setWinningIndexesStore,
   setCurrentPlayerMarkToStore,
-  setWinningPositionsToStore
+  setWinningPositionsToStore,
+  setTieGameToStore
 } = slice.actions
 
-export const storePlayerNames = (names) => async dispatch => {
+export const storePlayerNames = (names:string[]) => async (dispatch: Dispatch) => {
   try {
     dispatch(setPlayerNamesToStore(names));
   } catch (e) {
@@ -61,7 +66,7 @@ export const storePlayerNames = (names) => async dispatch => {
   }
 }
 
-export const storeBoard = (board) => async dispatch => {
+export const storeBoard = (board:string[]) => (dispatch: Dispatch) => {
   try {
     dispatch(setBoardToStore(board));
   } catch (e) {
@@ -69,7 +74,7 @@ export const storeBoard = (board) => async dispatch => {
   }
 }
 
-export const storeWinner = (winner) => async dispatch => {
+export const storeWinner = (winner:string) => (dispatch: Dispatch) => {
   try {
     dispatch(setWinnerToStore(winner));
   } catch (e) {
@@ -77,23 +82,23 @@ export const storeWinner = (winner) => async dispatch => {
   }
 }
 
-export const storeGridSize = (grid) => async dispatch => {
+export const storeGridSize = (grid:number) => (dispatch: Dispatch) => {
   try {
     dispatch(setGridSizeToStore(grid));
     dispatch(setBoardToStore(Array(grid * grid).fill("")));
     
     const calculateWinningPositions = () => {
-      const winningRows = []
-      const winningCols = []
-      const winningDiag = []
+      const winningRows:any = []
+      const winningCols:any = []
+      const winningDiag:any = []
 
-      const winningBoard = []
+      const winningBoard:any = []
       for (let i = 0; i <= (grid * grid) -1; i++) {
         winningBoard.push(i);
       }
   
       // Calculate the winning rows
-      winningBoard.map((_, index) => {
+      winningBoard.map((_:any, index:number) => {
         for (let i = grid; i > 0; i--) {
           winningRows.push(winningBoard.splice(0, Math.ceil(winningBoard.length / i)))
         }
@@ -135,7 +140,7 @@ export const storeGridSize = (grid) => async dispatch => {
   }
 }
 
-export const storeStatus = (status) => async dispatch => {
+export const storeStatus = (status:string) => (dispatch: Dispatch) => {
   try {
     dispatch(setStatusToStore(status));
   } catch (e) {
@@ -143,7 +148,7 @@ export const storeStatus = (status) => async dispatch => {
   }
 }
 
-export const storeWinningIndexes = (indexes) => async dispatch => {
+export const storeWinningIndexes = (indexes:number[]) => (dispatch: Dispatch) => {
   try {
     dispatch(setWinningIndexesStore(indexes));
   } catch (e) {
@@ -151,9 +156,17 @@ export const storeWinningIndexes = (indexes) => async dispatch => {
   }
 }
 
-export const storeCurrentPlayerMark = (mark) => async dispatch => {
+export const storeCurrentPlayerMark = (mark:string) => (dispatch: Dispatch) => {
   try {
     dispatch(setCurrentPlayerMarkToStore(mark));
+  } catch (e) {
+    return console.error(e);
+  }
+}
+
+export const storeTieGame = (isTie:boolean) => (dispatch: Dispatch) => {
+  try {
+    dispatch(setTieGameToStore(isTie));
   } catch (e) {
     return console.error(e);
   }
