@@ -1,11 +1,12 @@
 import { useEffect } from "react"
 import { useSelector, useDispatch } from 'react-redux'
-import { storeBoard, storeWinner, storeStatus, storeWinningIndexes, storeCurrentPlayerMark } from '../store/boardSettings'
+import { storeBoard, storeWinner, storeStatus, storeWinningIndexes, storeCurrentPlayerMark, storeTieGame } from '../store/boardSettings'
 
 type ExportValues = {
   status: string
   currentPlayerMark: string
   winner: string | null
+  tieGame: boolean
   handleRestartGame: () => void
   handleStartGame: () => void
 }
@@ -15,7 +16,7 @@ type BoardItemProps = {
   index: number
 }
 export default (): ExportValues => {
-  const { players, gridSize, board, winner, status, winningIndexes, currentPlayerMark, winningPositions } = useSelector((state : any) => state.boardSettings)
+  const { players, gridSize, board, winner, status, winningIndexes, currentPlayerMark, winningPositions, tieGame } = useSelector((state : any) => state.boardSettings)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,12 +33,18 @@ export default (): ExportValues => {
       })
       const firstArrayValue = formatWinningArrays[0].content
       const isFinished = formatWinningArrays.every((value: BoardItemProps) => value.content === firstArrayValue)
+      const boardIsFull = board.every((val:string) => val.length)
       winner = !isFinished ? null : firstArrayValue
 
       if(winner) {
         // Array with indexes to indicate winning squares
         dispatch<any>(storeWinningIndexes(formatWinningArrays.map((item: any) => item.index)))
       }
+
+      if(boardIsFull && !winner) {
+        dispatch<any>(storeTieGame(true))
+      }
+
       winningPositionsTries++
     }
 
@@ -57,6 +64,7 @@ export default (): ExportValues => {
 
   const handleRestartGame = () => {
     dispatch<any>(storeBoard(Array(gridSize * gridSize).fill("")))
+    dispatch<any>(storeTieGame(false))
     dispatch<any>(storeWinner(""))
     dispatch<any>(storeWinningIndexes([]))
     dispatch<any>(storeCurrentPlayerMark('X'))
@@ -67,6 +75,7 @@ export default (): ExportValues => {
     status,
     currentPlayerMark,
     winner,
+    tieGame,
     handleRestartGame,
     handleStartGame,
   }

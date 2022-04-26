@@ -69,10 +69,13 @@ function App() {
           </div>
           <Game />
           <div className='game-container__infos'>
+          {!game.tieGame ? 
             <div>
               <div>{game.winner ? 'Winner' : 'Next player'}</div>
               <div>{game.winner ? game.winner : game.currentPlayerMark}</div>
-            </div>
+            </div> : 
+            <div>Tie game</div>
+            }
           </div>
         </>
         )}
