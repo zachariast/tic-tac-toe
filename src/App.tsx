@@ -5,7 +5,10 @@ import useTickTackToe from "./hooks/useTickTackToe"
 import Game from './components/Game'
 
 function App() {
-  const [playerNames, setPlayerNames] = useState(['Player 1','Player 2']);
+  const [playerNames, setPlayerNames] = useState(['Player 1','Player 2'])
+  const [error, setError] = useState({
+    gridSize: false
+  })
   const { players, gridSize } = useSelector((state : any) => state.boardSettings)
   const dispatch = useDispatch();
   const game = useTickTackToe();
@@ -15,7 +18,7 @@ function App() {
       game.handleStartGame()
       dispatch<any>(storePlayerNames(playerNames))
     } else {
-      // manipulate error
+      setError({ gridSize: true })
     }
   }
   const restartGame = () => {
@@ -37,9 +40,16 @@ function App() {
         {game.status === 'inactive' ? (
           <>
             <div className='game-container__names'>
-              <input type="text" placeholder='Player 1 Name' onChange={(e) => handleNameBlur(0, e.target.value)}/>
-              <input type="text" placeholder='Player 2 Name' onChange={(e) => handleNameBlur(1, e.target.value)}/>
-              <input type="number" placeholder='Grid size ex. 3' min="3" onChange={(e) => handleGridBlur(e.target.value)}/>
+              <div>
+                <input type="text" placeholder='Player 1 Name' onChange={(e) => handleNameBlur(0, e.target.value)}/>
+              </div>
+              <div>
+                <input type="text" placeholder='Player 2 Name' onChange={(e) => handleNameBlur(1, e.target.value)}/>
+              </div>
+              <div className='grid-input'>
+                {error.gridSize ? <label>Grid size must be bigger than 3</label> : null}
+                <input type="number" placeholder='Grid size ex. 3' min="3" onChange={(e) => handleGridBlur(e.target.value)}/>
+              </div>
             </div>
             <div className='button-container'>
               <button onClick={startGame}>Start</button>

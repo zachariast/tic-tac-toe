@@ -7,7 +7,7 @@ type SquareProps = {
   index: number
 }
 
-export const Square = ({value, index }: SquareProps) => {
+export const Square = ({ value, index }: SquareProps) => {
   const dispatch = useDispatch()
   const { winningIndexes, winner, board, currentPlayerMark } = useSelector((state : any) => state.boardSettings)
 
