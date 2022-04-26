@@ -1,10 +1,13 @@
 import { Square } from "./Square";
 import { GameContainer } from './style'
+import { useSelector } from 'react-redux'
 
 function Game() {
+  const { gridSize, board } = useSelector((state : any) => state.boardSettings)
+
   return (
-    <GameContainer>
-      {Array(3*3).fill('').map((value:string, index:number) => (
+    <GameContainer gridSize={gridSize}>
+      {board.map((value:string, index:number) => (
         <Square
           key={index}
           value={value}
