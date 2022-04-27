@@ -58,7 +58,7 @@ const {
   setTieGameToStore
 } = slice.actions
 
-export const storePlayerNames = (names:string[]) => async (dispatch: Dispatch) => {
+export const storePlayerNames = (names:string[]) => (dispatch: Dispatch) => {
   try {
     dispatch(setPlayerNamesToStore(names));
   } catch (e) {
